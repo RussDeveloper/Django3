@@ -19,12 +19,25 @@ class News(models.Model):
         verbose_name_plural = 'Новости'
         ordering = ['-created_at']
 
+    def get_absolute_url(self):   # По одной из конвенций django функция, указывающая
+                                  # на конкретный объект новостей должна называться именно так
+
+        return reverse('view_news',                      #Название маршрута, как во view
+                        kwargs={"news_id": self.pk},     #Второй аргумент - номер категории,
+                       )                                 #т.е первичный ключ - pk
+
 
 class Category(models.Model):
     title = models.CharField(max_length=150,
                              db_index=True,
                              verbose_name='Наименование категории'
                              )
+    def get_absolute_url(self):   #По одной из конвенций djangoфункция, указывающая
+                               # на конкретный объект категорий должна называться именно так
+
+        return reverse('category',                      #Название маршрута, как во view
+                        kwargs={"category_id": self.pk} #Второй аргумент - номер категории,
+                       )                                #т.е первичный ключ - pk
 
     class Meta:
         verbose_name = 'Категория'
