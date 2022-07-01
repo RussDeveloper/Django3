@@ -27,6 +27,11 @@ class News(models.Model):
                        )                                 #т.е первичный ключ - pk
 
 
+
+
+
+
+
 class Category(models.Model):
     title = models.CharField(max_length=150,
                              db_index=True,
