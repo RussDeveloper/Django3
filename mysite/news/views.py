@@ -14,7 +14,7 @@ def get_category(request, category_id):
     news = News.objects.filter(category_id=category_id)
     category = Category.objects.get(pk=category_id)
     return render(request, 'news/category.html', {'news': news,
-                                               'category': category,
+                                               'category': category
                                                })
 
 def view_news(request, news_id):
@@ -28,8 +28,10 @@ def add_news(request):
         form = NewsForm(request.POST)    #Забираем из формы данные
         if form.is_valid():
             #print(form.cleaned_data)
-            News.objects.create(**form.cleaned_data)  # Операция распаковки словаря в Python
-            return redirect('home')
+            #News.objects.create(**form.cleaned_data)  # Операция распаковки словаря в Python
+            #return redirect('home')
+            news = form.save()
+            return redirect(news)
     else:
         form = NewsForm()
     return render(request, 'news/add_news.html', {'form': form})
