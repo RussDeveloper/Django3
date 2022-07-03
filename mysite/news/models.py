@@ -23,13 +23,8 @@ class News(models.Model):
                                   # на конкретный объект новостей должна называться именно так
 
         return reverse('view_news',                      #Название маршрута, как во view
-                        kwargs={"news_id": self.pk},     #Второй аргумент - номер категории,
+                        kwargs={"pk": self.pk},     #Второй аргумент - номер категории,
                        )                                 #т.е первичный ключ - pk
-
-
-
-
-
 
 
 class Category(models.Model):
