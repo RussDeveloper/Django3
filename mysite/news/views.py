@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import News, Category
 from .forms import NewsForm
+from django.urls import reverse_lazy
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 # Create your views here.
 
@@ -38,11 +39,17 @@ class NewsByCategory(ListView):
         return context
 
 
-class VievNews(DetailView):
+class ViewNews(DetailView):
     model = News
     context_object_name = 'news_item'
     #template_name = 'news/news_detail.html'
     #pk_url_kwarg = 'news_id'
+
+
+class CreateNews(CreateView):
+    form_class = NewsForm
+    template_name = 'news/add_news.html'
+    success_url = reverse_lazy('home')
 
 # def index(request):
 #     news = News.objects.all()
@@ -62,15 +69,15 @@ def get_category(request, category_id):
 #    return render(request, 'news/view_news.html', {"news_item": news_item})
 
 
-def add_news(request):
-    if request.method == 'POST':
-        form = NewsForm(request.POST)    #Забираем из формы данные
-        if form.is_valid():
-            #print(form.cleaned_data)
-            #News.objects.create(**form.cleaned_data)  # Операция распаковки словаря в Python
-            #return redirect('home')
-            news = form.save()
-            return redirect(news)
-    else:
-        form = NewsForm()
-    return render(request, 'news/add_news.html', {'form': form})
+# def add_news(request):
+#     if request.method == 'POST':
+#         form = NewsForm(request.POST)    #Забираем из формы данные
+#         if form.is_valid():
+#             #print(form.cleaned_data)
+#             #News.objects.create(**form.cleaned_data)  # Операция распаковки словаря в Python
+#             #return redirect('home')
+#             news = form.save()
+#             return redirect(news)
+#     else:
+#         form = NewsForm()
+#     return render(request, 'news/add_news.html', {'form': form})
