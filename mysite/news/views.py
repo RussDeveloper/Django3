@@ -3,28 +3,30 @@ from django.http import HttpResponse
 from .models import News, Category
 from .forms import NewsForm
 from django.urls import reverse_lazy
-
 from django.views.generic import ListView, DetailView, CreateView
-
+from news.utils import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
 
-class HomeNews(ListView):
+class HomeNews(MyMixin, ListView ):
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
+    mixin_prop = 'hello world'
     #extra_context = {'title': 'Главная страница'}
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
+        context['title'] = self.get_upper('Главная страница')
+        context['mixin_prop'] = self.get_prop()
         return context
 
     def get_queryset(self):
         return News.objects.filter(is_published=True)
 
 
-class NewsByCategory(ListView):
+class NewsByCategory(ListView, MyMixin):
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -35,7 +37,7 @@ class NewsByCategory(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        context['title'] = self.get_upper(Category.objects.get(pk=self.kwargs['category_id']))
         return context
 
 
@@ -46,10 +48,12 @@ class ViewNews(DetailView):
     #pk_url_kwarg = 'news_id'
 
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'news/add_news.html'
     success_url = reverse_lazy('home')
+    raise_exception = True             #Генерация ошибки при попытке зайти по адресу создания новости
+                                       #будучи не авторизованным
 
 # def index(request):
 #     news = News.objects.all()
